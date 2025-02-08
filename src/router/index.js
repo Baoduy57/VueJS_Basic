@@ -1,7 +1,7 @@
 import { createRouter, createWebHistory } from "vue-router";
 import HomeView from "../views/HomeView.vue";
-import Address from "@/views/Address.vue";
-import AboutUser from "@/views/AboutUser.vue";
+import CreateView from "../views/CreateView.vue";
+import TodoDetailView from "../views/TodoDetailView.vue";
 
 const router = createRouter({
   history: createWebHistory(import.meta.env.BASE_URL),
@@ -12,21 +12,14 @@ const router = createRouter({
       component: HomeView,
     },
     {
-      path: "/about",
-      name: "about",
-      component: () => import("../views/AboutView.vue"),
-      children: [
-        {
-          path: "user",
-          name: "user",
-          component: AboutUser,
-        },
-      ],
+      path: "/create",
+      name: "create",
+      component: CreateView,
     },
     {
-      path: "/address",
-      name: "address",
-      component: Address,
+      path: "/todo/:id",
+      name: "todoDetail",
+      component: TodoDetailView,
     },
   ],
 });
