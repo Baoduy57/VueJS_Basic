@@ -1,32 +1,41 @@
 <script setup>
-import TheWelcome from "../components/TheWelcome.vue";
-import TheChildren from "../components/TheChildren.vue";
-import HelloWorld from "../components/HelloWorld.vue";
-import { ref, watch } from "vue";
+import { computed, onMounted, ref } from "vue";
+import { useRouter } from "vue-router";
+const router = useRouter();
 
-const count = ref(10);
+const textSearch = ref("");
 
-const handleIncrease = (data) => {
-  console.log("Emit data", data);
-  count.value = count.value + data.value;
-};
+const users = ref([]);
 
-const showHelloWorld = ref(true);
-watch(showHelloWorld, () => {
-  console.log("Show Hello World", showHelloWorld.value);
+onMounted(() => {
+  fetch("https://jsonplaceholder.typicode.com/users")
+    .then((response) => response.json())
+    .then((json) => (users.value = json));
+});
+//mà phương thức filter yêu cầu phải là một mảng.
+const userFilter = computed(() => {
+  return users.value.filter(
+    (item) =>
+      item.username.toUpperCase().indexOf(textSearch.value.toUpperCase()) !==
+        -1 ||
+      item.email.toUpperCase().indexOf(textSearch.value.toUpperCase()) !== -1
+  );
 });
 </script>
 
 <template>
-  <main>
-    <!-- <TheWelcome /> -->
+  <main style="color: #000; padding: 2rem">
+    <input type="text" placeholder="Enter Search Here!" v-model="textSearch" />
 
-    <div v-if="showHelloWorld">
-      <HelloWorld msg="Hello JeJu" />
+    <div class="group-card">
+      <div class="card-item" v-for="user in userFilter" :key="user.id">
+        <div @click="router.push({ path: `/todo/${user?.id}` })">
+          <h2>{{ user?.username }}</h2>
+          <i>{{ user?.email }}</i>
+        </div>
+      </div>
     </div>
-
-    <hr />
-
-    <TheChildren :countView="count" @handle-increase="handleIncrease" />
   </main>
 </template>
+
+<style></style>
